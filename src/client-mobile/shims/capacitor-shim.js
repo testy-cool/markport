@@ -529,8 +529,11 @@
               // External (chokidar) write — invalidate cache so subsequent
               // reads pick up the new content/mtime instead of stale cache.
               invalidateCacheEntry(msg.path);
+              // vaultId-prefixed, like OpfsStore: Obsidian's watch callback
+              // strips basePath (= vaultId) off the front of the path.
+              const changedPath = vaultId ? vaultId + '/' + msg.path : msg.path;
               window.__owCapacitorWatcher._listeners.forEach((cb) => {
-                cb({ path: msg.path });
+                cb({ path: changedPath });
               });
             }
           } catch (_) { }
